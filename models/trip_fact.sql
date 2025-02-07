@@ -1,0 +1,29 @@
+WITH TRIPS AS (
+
+    select 
+    *
+    from {{ source('demo', 'bike') }}
+
+
+    where STARTED_AT != 'started_at'
+
+    limit 10
+),
+
+PROCESSED_TRIPS AS (
+
+select
+DATE(TO_TIMESTAMP(STARTED_AT)) AS TRIP_DATE,
+START_STATIO_ID AS START_STATION_ID,
+END_STATION_ID,
+RIDEABLE_TYPE,
+MEMBER_CSUAL AS MEMBER_CASUAL,
+TIMESTAMPDIFF(SECOND,STARTED_AT,ENDED_AT) AS TRIP_DURATION_SECONDS
+
+from TRIPS
+
+)
+
+select
+*
+from PROCESSED_TRIPS
