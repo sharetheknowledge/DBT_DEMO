@@ -1,6 +1,12 @@
+
+with cte as (
 select
-*
-from {{ source('demo', 'bike') }}
+distinct(date(time)) as dateweather
+from {{ source('demo', 'weather') }}
 
 
-limit 10
+)
+
+select dateweather from cte
+
+order by dateweather desc
