@@ -9,7 +9,7 @@ START_LNG as start_station_lng
 
 from {{ source('demo', 'bike') }}
 
-where RIDE_ID != 'ride_id'
+where RIDE_ID != '"bikeid"'
 
 
 )
