@@ -1,0 +1,45 @@
+name: Snowflake + dbt Automation
+
+on:
+  push:
+    paths:
+      - 'models/**'
+      - 'data/**'
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install SnowSQL
+        run: |
+          pip install snowflake-cli-labs
+          mkdir -p ~/.snowsql
+          echo "[connections]" > ~/.snowsql/config
+          echo "accountname = ${{ secrets.SNOWSQL_ACCOUNT }}" >> ~/.snowsql/config
+          echo "username = ${{ secrets.SNOWSQL_USER }}" >> ~/.snowsql/config
+          echo "password = ${{ secrets.SNOWSQL_PWD }}" >> ~/.snowsql/config
+          echo "rolename = ${{ secrets.SNOWSQL_ROLE }}" >> ~/.snowsql/config
+          echo "warehousename = ${{ secrets.SNOWSQL_WAREHOUSE }}" >> ~/.snowsql/config
+          echo "dbname = ${{ secrets.SNOWSQL_DATABASE }}" >> ~/.snowsql/config
+          echo "schemaname = ${{ secrets.SNOWSQL_SCHEMA }}" >> ~/.snowsql/config
+
+      - name: Run COPY INTO
+        run: |
+          snowsql -q "COPY INTO DEMO.DEMO_SCHEMA.WEATHER FROM @DEMO.DEMO_SCHEMA.WEATHER_STAGE FILE_FORMAT=(TYPE=JSON);"
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dbt
+        run: pip install dbt-snowflake
+
+      - name: Run dbt
+        run: |
+          dbt deps
+          dbt run --profiles-dir ./profiles
