@@ -1,0 +1,14 @@
+default:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWSQL_ACCOUNT') }}"
+      user: "{{ env_var('SNOWSQL_USER') }}"
+      password: "{{ env_var('SNOWSQL_PWD') }}"
+      role: "{{ env_var('SNOWSQL_ROLE') }}"
+      database: "{{ env_var('SNOWSQL_DATABASE') }}"
+      warehouse: "{{ env_var('SNOWSQL_WAREHOUSE') }}"
+      schema: "{{ env_var('SNOWSQL_SCHEMA') }}"
+      threads: 4
+      client_session_keep_alive: false
