@@ -16,7 +16,8 @@ MEMBER_CSUAL
 
 from {{ source('demo', 'bike') }}
 
-where RIDE_ID != '"bikeid"' and STARTED_AT != '"starttime"' and STARTED_AT !='starttime' 
+where RIDE_ID not in ('"bikeid"', '""bikeid""') 
+  and STARTED_AT not in ('"starttime"', 'starttime', '""starttime""')
 )
 
 select
